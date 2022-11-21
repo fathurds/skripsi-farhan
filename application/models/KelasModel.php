@@ -43,5 +43,3 @@ class KelasModel extends CI_Model {
 	}
 
 }
-
-?>

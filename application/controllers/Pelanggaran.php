@@ -61,9 +61,15 @@ class Pelanggaran extends CI_Controller
 		$melanggar['pelanggaran'] = $this->input->post('pelanggaran');
 		$melanggar['alasan'] = $this->input->post('alasan');
 
-		$res = $this->SiswaModel->insertPelanggaran($melanggar);
+		$kriteria = $this->TatibModel->selectById($melanggar['pelanggaran'])->result()[0];
+		$melanggar['kriteria'] = $kriteria->id_kriteria;
+		$kelas = $this->SiswaModel->selectByNIS($melanggar['nis'])->result()[0];
+		$melanggar['kelas'] = $kelas->id_kelas;
+
 		// $pelanggaran
 		// echo json_encode($res);
+
+		$this->SiswaModel->insertPelanggaran($melanggar);
 		redirect('admin/pelanggaran');
 	}
 }

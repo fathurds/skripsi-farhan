@@ -81,6 +81,8 @@ class SiswaModel extends CI_Model
 				'nis' => $searchSiswa->nis,
 				'kode_tatib' => $data['pelanggaran'],
 				'alasan' => $data['alasan'],
+				'kriteria' => $data['kriteria'],
+				'id_kelas' => $data['kelas'],
 				'created_date' => date_create()->format('Y-m-d')
 			);
 			return $this->db->insert('tb_pelanggaran', $data_pelanggaran);

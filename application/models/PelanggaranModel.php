@@ -119,4 +119,24 @@ class PelanggaranModel extends CI_Model
 
 		return $this->db->query($queAll);
 	}
+
+	public function selectAllRatingPoin($id)
+	{
+		$kriteria = $this->GroupTatibModel->selectKriteriaAll()->result();
+		$countKriteria = "";
+
+		foreach ($kriteria as $pelanggaran) { // memasukan C1-C12
+			$countKriteria .= ", COUNT(DISTINCT IF(id_kelas = " . $id . ",
+							IF(kriteria = '" . $pelanggaran->kriteria . "',
+								id_pelanggaran, NULL),
+							NULL)) as " . $pelanggaran->kriteria . "";
+		}
+
+		$query = "SELECT
+					a.tingkat, a.nama
+					" . $countKriteria . "
+				from tb_pelanggaran join tb_kelas a WHERE a.id = " . $id . "";
+
+		return $this->db->query($query);
+	}
 }

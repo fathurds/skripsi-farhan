@@ -19,6 +19,13 @@ class GroupTatibModel extends CI_Model
 		return $this->db->query($query);
 	}
 
+	public function selectKriteriaAll()
+	{
+		$query = 'SELECT kriteria FROM ' . $this->tableName . ' ORDER BY length(kriteria), kriteria';
+
+		return $this->db->query($query);
+	}
+
 	public function selectById($kriteria)
 	{
 		$this->db->select('*');
