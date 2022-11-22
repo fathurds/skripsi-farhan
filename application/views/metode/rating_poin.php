@@ -25,6 +25,7 @@
               <th rowspan="3" style="vertical-align: middle;" class="text-center">Nama Kelas</th>
               <th rowspan="3" style="vertical-align: middle;" class="text-center">Tingkat</th>
               <th class="text-center" colspan="<?= $colspanKategori ?>">Kategori Pelanggaran</th>
+              <th rowspan="3" style="vertical-align: middle;" class="text-center">Total</th>
             </tr>
             <tr>
               <?php foreach ($kategori_pelanggaran as $pelanggaran) : ?>
@@ -43,6 +44,7 @@
                 <?php foreach ($kategori_pelanggaran as $pelanggaran) : ?>
                   <td class="text-center"><?= $v_kelas[$pelanggaran->kriteria] ?></td>
                 <?php endforeach; ?>
+                <td><?= $v_kelas['total'] ?></td>
               </tr>
             <?php
               $nokelas++;

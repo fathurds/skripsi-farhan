@@ -14,20 +14,21 @@ class Metode extends CI_Controller
 
   public function ratingPoin()
   {
-    // $data = [];
-    // $data['kelas'] = $this->KelasModel->selectAll()->result_array();
-    // $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectAll()->result_array();
-    // $pelanggaran_group = $this->PelanggaranModel->selectPelanggaranGroupKelas()->result_array();
-    // $res_rekap = $this->getRekap($pelanggaran_group);
-    // $data['pelanggaran_group'] = $res_rekap['rating_poin'];
-
     $data['semuaKelas'] = $this->KelasModel->selectAll()->result();
     $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
 
     $temp = array();
 
-    foreach ($data['semuaKelas'] as $kelas) {
-      array_push($temp, $this->PelanggaranModel->selectAllRatingPoin($kelas->id)->result_array()[0]);
+    foreach ($data['semuaKelas'] as $kelas) { // Looping kelas untuk mendapatkan id kelas
+
+      $tempKelas = $this->PelanggaranModel->selectAllRatingPoin($kelas->id)->result_array()[0];
+      $tempKelas['total'] = 0;
+
+      foreach ($data['kategori_pelanggaran'] as $kategori) { // Looping kriteria untuk dikalikan dengan bobot dan dimasukan ke tabel dari pelanggaran
+        $tempKelas[$kategori->kriteria] = $tempKelas[$kategori->kriteria] * $kategori->bobot;
+        $tempKelas['total'] = $tempKelas['total'] + $tempKelas[$kategori->kriteria];
+      }
+      array_push($temp, $tempKelas);
     }
     $data['kelas'] = $temp;
 
