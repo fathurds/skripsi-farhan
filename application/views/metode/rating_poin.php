@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <h2>Rating Poin</h2>
+        <h2><?= isset($saw) ? "Perhitungan Ranking dengan Metode SAW" : "Rating Poin" ?></h2>
       </div>
     </div>
   </div>
@@ -33,24 +33,56 @@
               <?php endforeach; ?>
             </tr>
           </thead>
-          <tbody>
-            <?php $nokelas = 1;
-            foreach ($kelas as $v_kelas) :
-            ?>
-              <tr>
-                <td><?= $nokelas; ?></td>
-                <td><?= $v_kelas['nama']; ?></td>
-                <td class="text-center"><?= $v_kelas['tingkat']; ?></td>
-                <?php foreach ($kategori_pelanggaran as $pelanggaran) : ?>
-                  <td class="text-center"><?= $v_kelas[$pelanggaran->kriteria] ?></td>
-                <?php endforeach; ?>
-                <td><?= $v_kelas['total'] ?></td>
-              </tr>
-            <?php
-              $nokelas++;
-            endforeach;
-            ?>
-          </tbody>
+          <?php if (!isset($saw)) : ?>
+            <tbody>
+              <?php
+              $nokelas = 1;
+              $total = 0;
+              foreach ($kelas as $v_kelas) :
+              ?>
+                <tr>
+                  <td><?= $nokelas; ?></td>
+                  <td><?= $v_kelas['nama']; ?></td>
+                  <td class="text-center"><?= $v_kelas['tingkat']; ?></td>
+                  <?php foreach ($kategori_pelanggaran as $pelanggaran) : ?>
+                    <?php
+                    $kriteria = intval($v_kelas[$pelanggaran->kriteria]);
+                    $maxkriteria = $max['max_' . $pelanggaran->kriteria] != 0 ? intval($max['max_' . $pelanggaran->kriteria]) : 1;
+                    $rating = round($kriteria / $maxkriteria, 2);
+                    $total = $total + $rating;
+                    ?>
+                    <td class="text-center"><?= $rating ?></td>
+                  <?php endforeach; ?>
+                  <td><?= $total ?></td>
+                </tr>
+              <?php
+                $total = 0;
+                $nokelas++;
+              endforeach;
+              ?>
+            </tbody>
+          <?php else : ?>
+            <tbody>
+              <?php
+              $nokelas = 1;
+              foreach ($kelas as $v_kelas) :
+              ?>
+                <tr>
+                  <td><?= $nokelas; ?></td>
+                  <td><?= $v_kelas['nama']; ?></td>
+                  <td class="text-center"><?= $v_kelas['tingkat']; ?></td>
+                  <?php foreach ($kategori_pelanggaran as $pelanggaran) : ?>
+                    <td class="text-center"><?= $v_kelas[$pelanggaran->kriteria] ?></td>
+                  <?php endforeach; ?>
+                  <td><?= $v_kelas['total'] ?></td>
+                </tr>
+              <?php
+                $total = 0;
+                $nokelas++;
+              endforeach;
+              ?>
+            </tbody>
+          <?php endif; ?>
         </table>
       </div>
     </div>

@@ -10,6 +10,7 @@ class Metode extends CI_Controller
     $this->load->model('GroupTatibModel');
     $this->load->helper('url');
     $this->load->database();
+    $this->head['kelasheader'] = $this->KelasModel->selectAll()->result_array();
   }
 
   public function ratingPoin()
@@ -21,16 +22,20 @@ class Metode extends CI_Controller
 
     foreach ($data['semuaKelas'] as $kelas) { // Looping kelas untuk mendapatkan id kelas
 
-      $tempKelas = $this->PelanggaranModel->selectAllRatingPoin($kelas->id)->result_array()[0];
-      $tempKelas['total'] = 0;
+      $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id)->result_array()[0];
 
-      foreach ($data['kategori_pelanggaran'] as $kategori) { // Looping kriteria untuk dikalikan dengan bobot dan dimasukan ke tabel dari pelanggaran
-        $tempKelas[$kategori->kriteria] = $tempKelas[$kategori->kriteria] * $kategori->bobot;
-        $tempKelas['total'] = $tempKelas['total'] + $tempKelas[$kategori->kriteria];
-      }
       array_push($temp, $tempKelas);
     }
+
     $data['kelas'] = $temp;
+
+    foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
+      $tempPoin['max_' . $pelanggaran->kriteria] = max(array_column($data['kelas'], $pelanggaran->kriteria));
+    }
+    $data['max'] = $tempPoin;
+
+    // $total = array_column($data['kelas'], 'total'); // UNTUK RANKING
+    // array_multisort($total, SORT_DESC, $data['kelas']);
 
     $this->load->view('layout/aheader', $this->head);
     $this->load->view('metode/rating_poin', $data);
@@ -140,24 +145,72 @@ class Metode extends CI_Controller
     return $result_rekap;
   }
 
+  // public function saw()
+  // {
+  //   $data = [];
+  //   $data['kelas'] = $this->KelasModel->selectAll()->result_array();
+  //   $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectAll()->result_array();
+  //   $pelanggaran_group = $this->PelanggaranModel->selectPelanggaranGroupKelas()->result_array();
+  //   $res_rekap = $this->getRekapSaw($pelanggaran_group);
+  //   $data['saw_data'] = $res_rekap['saw'];
+  //   $data['saw_total'] = $res_rekap['saw_total'];
+  //   $data['saw_ranking'] = $res_rekap['saw_ranking'];
+
+  //   asort($data['saw_ranking']);
+  //   $data['tingkat'] = array();
+  //   foreach ($data['kelas'] as $value) {
+  //     $data['tingkat'][$value['nama']] = $value['tingkat'];
+  //   }
+  //   $this->load->view('layout/aheader', $this->head);
+  //   $this->load->view('metode/saw', $data);
+  //   $this->load->view('layout/afooter');
+  // }
+
   public function saw()
   {
-    $data = [];
-    $data['kelas'] = $this->KelasModel->selectAll()->result_array();
-    $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectAll()->result_array();
-    $pelanggaran_group = $this->PelanggaranModel->selectPelanggaranGroupKelas()->result_array();
-    $res_rekap = $this->getRekapSaw($pelanggaran_group);
-    $data['saw_data'] = $res_rekap['saw'];
-    $data['saw_total'] = $res_rekap['saw_total'];
-    $data['saw_ranking'] = $res_rekap['saw_ranking'];
+    $data['semuaKelas'] = $this->KelasModel->selectAll()->result();
+    $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
 
-    asort($data['saw_ranking']);
-    $data['tingkat'] = array();
-    foreach ($data['kelas'] as $value) {
-      $data['tingkat'][$value['nama']] = $value['tingkat'];
+    $temp = array();
+
+    foreach ($data['semuaKelas'] as $kelas) {
+
+      $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id)->result_array()[0];
+
+      array_push($temp, $tempKelas);
     }
+
+    $data['kelas'] = $temp;
+
+    foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
+      $tempPoin['max_' . $pelanggaran->kriteria] = max(array_column($data['kelas'], $pelanggaran->kriteria));
+    }
+    $max = $tempPoin;
+
+    $tempKelas = array();
+    foreach ($data['kelas'] as $kelas) {
+      $total = 0;
+      foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
+        $nilaiKriteria = intval($kelas[$pelanggaran->kriteria]);
+        $maxKriteria = $max['max_' . $pelanggaran->kriteria] != 0 ? intval($max['max_' . $pelanggaran->kriteria]) : 1;
+        $rating[$pelanggaran->kriteria] = round($nilaiKriteria / $maxKriteria, 2);
+        $total = $total + $rating[$pelanggaran->kriteria];
+      }
+      $rating['tingkat'] = $kelas['tingkat'];
+      $rating['nama'] = $kelas['nama'];
+      $rating['total'] = $total;
+      array_push($tempKelas, $rating);
+    }
+
+    $data['kelas'] = $tempKelas;
+
+    $total = array_column($data['kelas'], 'total'); // SORTING RANKING
+    array_multisort($total, SORT_DESC, $data['kelas']);
+
+    $data['saw'] = true;
+
     $this->load->view('layout/aheader', $this->head);
-    $this->load->view('metode/saw', $data);
+    $this->load->view('metode/rating_poin', $data);
     $this->load->view('layout/afooter');
   }
 
