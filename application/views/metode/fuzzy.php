@@ -11,33 +11,28 @@
 <div class="section">
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-8">
 
-        <table class="table table-bordered" style="color:black; background: #d3fffb;" id="dt">
+        <table class="table table-bordered text-center" style="color:black; background: #d3fffb;" id="dt">
           <thead>
             <tr>
-              <td rowspan="2">No</td>
-              <td colspan="2">Rentang Nilai</td>
-              <td rowspan="2">Bobot</td>
-            </tr>
-            <tr>
-              <td>Nilai Min</td>
-              <td>Nilai Maks</td>
+              <td>No</td>
+              <td>Nilai</td>
+              <td>Bobot</td>
             </tr>
           </thead>
           <tbody>
             <?php
-              $no = 1;
-              foreach($fuzzy as $val_fuzzy){?>
-            <tr>
-              <td><?=$no?></td>
-              <td><?=$val_fuzzy['nilai_min']?></td>
-              <td><?=$val_fuzzy['nilai_maks']?></td>
-              <td><?=$val_fuzzy['bobot']?></td>
-            </tr>
+            $no = 1;
+            foreach ($fuzzy as $val_fuzzy) { ?>
+              <tr>
+                <td><?= $no ?></td>
+                <td><?= $val_fuzzy->nilai_min ?> s/d <?= $val_fuzzy->nilai_maks ?></td>
+                <td><?= $val_fuzzy->bobot ?></td>
+              </tr>
             <?php
-                $no++;
-              }?>
+              $no++;
+            } ?>
           </tbody>
         </table>
       </div>

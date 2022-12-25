@@ -15,27 +15,7 @@ class Metode extends CI_Controller
 
   public function ratingPoin()
   {
-    $data['semuaKelas'] = $this->KelasModel->selectAll()->result();
-    $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
-
-    $temp = array();
-
-    foreach ($data['semuaKelas'] as $kelas) { // Looping kelas untuk mendapatkan id kelas
-
-      $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id)->result_array()[0];
-
-      array_push($temp, $tempKelas);
-    }
-
-    $data['kelas'] = $temp;
-
-    foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
-      $tempPoin['max_' . $pelanggaran->kriteria] = max(array_column($data['kelas'], $pelanggaran->kriteria));
-    }
-    $data['max'] = $tempPoin;
-
-    // $total = array_column($data['kelas'], 'total'); // UNTUK RANKING
-    // array_multisort($total, SORT_DESC, $data['kelas']);
+    $data = $this->sawMethod();
 
     $this->load->view('layout/aheader', $this->head);
     $this->load->view('metode/rating_poin', $data);
@@ -72,7 +52,7 @@ class Metode extends CI_Controller
   public function fuzzy()
   {
     $data = [];
-    $data['fuzzy'] = $this->PelanggaranModel->selectAllFuzzy()->result_array();
+    $data['fuzzy'] = $this->PelanggaranModel->selectAllFuzzy()->result();
 
     $this->load->view('layout/aheader', $this->head);
     $this->load->view('metode/fuzzy', $data);
@@ -166,45 +146,59 @@ class Metode extends CI_Controller
   //   $this->load->view('layout/afooter');
   // }
 
+  // public function saw() // bekas fathur belum ditambahkan fuzzy
+  // {
+  //   $data['semuaKelas'] = $this->KelasModel->selectAll()->result();
+  //   $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
+
+  //   $temp = array();
+
+  //   foreach ($data['semuaKelas'] as $kelas) {
+
+  //     $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id)->result_array()[0];
+
+  //     array_push($temp, $tempKelas);
+  //   }
+
+  //   $data['kelas'] = $temp;
+
+  //   foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
+  //     $tempPoin['max_' . $pelanggaran->kriteria] = max(array_column($data['kelas'], $pelanggaran->kriteria));
+  //   }
+  //   $max = $tempPoin;
+
+  //   $tempKelas = array();
+  //   foreach ($data['kelas'] as $kelas) {
+  //     $total = 0;
+  //     foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
+  //       $nilaiKriteria = intval($kelas[$pelanggaran->kriteria]);
+  //       $maxKriteria = $max['max_' . $pelanggaran->kriteria] != 0 ? intval($max['max_' . $pelanggaran->kriteria]) : 1;
+  //       $rating[$pelanggaran->kriteria] = round($nilaiKriteria / $maxKriteria, 2);
+  //       $total = $total + $rating[$pelanggaran->kriteria];
+  //     }
+  //     $rating['tingkat'] = $kelas['tingkat'];
+  //     $rating['nama'] = $kelas['nama'];
+  //     $rating['total'] = $total;
+  //     array_push($tempKelas, $rating);
+  //   }
+
+  //   $data['kelas'] = $tempKelas;
+
+  //   $total = array_column($data['kelas'], 'total'); // SORTING RANKING
+  //   array_multisort($total, SORT_DESC, $data['kelas']);
+
+  //   $data['saw'] = true;
+
+  //   $this->load->view('layout/aheader', $this->head);
+  //   $this->load->view('metode/rating_poin', $data);
+  //   $this->load->view('layout/afooter');
+  // }
+
   public function saw()
   {
-    $data['semuaKelas'] = $this->KelasModel->selectAll()->result();
-    $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
+    $data = $this->sawMethod();
 
-    $temp = array();
-
-    foreach ($data['semuaKelas'] as $kelas) {
-
-      $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id)->result_array()[0];
-
-      array_push($temp, $tempKelas);
-    }
-
-    $data['kelas'] = $temp;
-
-    foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
-      $tempPoin['max_' . $pelanggaran->kriteria] = max(array_column($data['kelas'], $pelanggaran->kriteria));
-    }
-    $max = $tempPoin;
-
-    $tempKelas = array();
-    foreach ($data['kelas'] as $kelas) {
-      $total = 0;
-      foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
-        $nilaiKriteria = intval($kelas[$pelanggaran->kriteria]);
-        $maxKriteria = $max['max_' . $pelanggaran->kriteria] != 0 ? intval($max['max_' . $pelanggaran->kriteria]) : 1;
-        $rating[$pelanggaran->kriteria] = round($nilaiKriteria / $maxKriteria, 2);
-        $total = $total + $rating[$pelanggaran->kriteria];
-      }
-      $rating['tingkat'] = $kelas['tingkat'];
-      $rating['nama'] = $kelas['nama'];
-      $rating['total'] = $total;
-      array_push($tempKelas, $rating);
-    }
-
-    $data['kelas'] = $tempKelas;
-
-    $total = array_column($data['kelas'], 'total'); // SORTING RANKING
+    $total = array_column($data['kelas'], 'total'); // UNTUK RANKING
     array_multisort($total, SORT_DESC, $data['kelas']);
 
     $data['saw'] = true;
@@ -213,6 +207,59 @@ class Metode extends CI_Controller
     $this->load->view('metode/rating_poin', $data);
     $this->load->view('layout/afooter');
   }
+
+  private function sawMethod()
+  {
+    $data['semuaKelas'] = $this->KelasModel->selectAll()->result();
+    $data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
+
+    $temp = array();
+
+    foreach ($data['semuaKelas'] as $kelas) { // Looping kelas untuk mendapatkan id kelas
+
+      $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id)->result_array()[0];
+
+      array_push($temp, $tempKelas);
+    }
+
+    $fuzzy = $this->PelanggaranModel->selectAllFuzzy()->result();
+    $tempResultKelas = array();
+
+    foreach ($temp as $temprating) { // LOOPING KELAS
+      $temprating['total'] = 0;
+      foreach ($data['kategori_pelanggaran'] as $kategori_pelanggaran) { // LOOPING KATEGORI C1-C12
+        foreach ($fuzzy as $val_fuzzy) { // LOOPING NILAI MIN DAN MAKS FUZZY
+          if ($temprating[$kategori_pelanggaran->kriteria] < 3) {
+            $temprating[$kategori_pelanggaran->kriteria] = 0;
+            $temprating['total'] += $temprating[$kategori_pelanggaran->kriteria];
+            break;
+          } else if ($temprating[$kategori_pelanggaran->kriteria] >= $val_fuzzy->nilai_min && $temprating[$kategori_pelanggaran->kriteria] <= $val_fuzzy->nilai_maks) {
+            $temprating[$kategori_pelanggaran->kriteria] = $val_fuzzy->bobot;
+            $temprating['total'] += $temprating[$kategori_pelanggaran->kriteria];
+            break;
+          } else if ($temprating[$kategori_pelanggaran->kriteria] > 102) {
+            $temprating[$kategori_pelanggaran->kriteria] = 11;
+            $temprating['total'] += $temprating[$kategori_pelanggaran->kriteria];
+            break;
+          } else {
+            continue;
+          }
+        }
+      }
+      array_push($tempResultKelas, $temprating);
+    }
+
+    $data['kelas'] = $tempResultKelas;
+
+    foreach ($data['kategori_pelanggaran'] as $pelanggaran) {
+      $tempPoin['max_' . $pelanggaran->kriteria] = max(array_column($data['kelas'], $pelanggaran->kriteria));
+    }
+    $data['max'] = $tempPoin;
+
+    return $data;
+  }
+
+
 
   private function rank_avg($value, $array, $order = 0)
   {
