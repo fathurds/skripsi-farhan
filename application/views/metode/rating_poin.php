@@ -40,13 +40,13 @@
                 <td><?= $nokelas; ?></td>
                 <td><?= $k_kelas; ?></td>
                 <?php foreach ($v_kelas as $key => $value) : ?>
-                  <?php foreach((array)$value as $keyResult => $valueResult) : ?>
-                    <?php if($keyResult != "total") : ?>
+                  <?php foreach ((array)$value as $keyResult => $valueResult) : ?>
+                    <?php if ($keyResult != "total") : ?>
                       <td class="text-center"><?= isset($valueResult) ? $valueResult : "0" ?></td>
-                    <?php  endif; ?>
+                    <?php endif; ?>
                   <?php endforeach; ?>
                 <?php endforeach; ?>
-                <td><?= $total[$nokelas-1] ?> <?= isset($siswa) ? "siswa" : "poin" ?></td>
+                <td><?= $v_kelas['total'] ?> <?= isset($siswa) ? "siswa" : "poin" ?></td>
               </tr>
             <?php
               $nokelas++;
