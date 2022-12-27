@@ -23,7 +23,6 @@
             <tr>
               <th rowspan="3" style="vertical-align: middle;" class="text-center">No.</th>
               <th rowspan="3" style="vertical-align: middle;" class="text-center">Nama Kelas</th>
-              <th rowspan="3" style="vertical-align: middle;" class="text-center">Tingkat</th>
               <th class="text-center" colspan="<?= $colspanKategori ?>">Kategori Pelanggaran</th>
               <th rowspan="3" style="vertical-align: middle;" class="text-center">Total</th>
             </tr>
@@ -34,28 +33,22 @@
             </tr>
           </thead>
           <tbody>
-            <?php
-            $nokelas = 1;
-            $total = 0;
-            foreach ($kelas as $v_kelas) :
+            <?php $nokelas = 1;
+            foreach ($kelas as $k_kelas => $v_kelas) :
             ?>
               <tr>
                 <td><?= $nokelas; ?></td>
-                <td><?= $v_kelas['nama']; ?></td>
-                <td class="text-center"><?= $v_kelas['tingkat']; ?></td>
-                <?php foreach ($kategori_pelanggaran as $pelanggaran) : ?>
-                  <?php
-                  $kriteria = intval($v_kelas[$pelanggaran->kriteria]);
-                  $maxkriteria = $max['max_' . $pelanggaran->kriteria] != 0 ? intval($max['max_' . $pelanggaran->kriteria]) : 1;
-                  $rating = round($kriteria / $maxkriteria, 2);
-                  $total = $total + $rating;
-                  ?>
-                  <td class="text-center"><?= $rating ?></td>
+                <td><?= $k_kelas; ?></td>
+                <?php foreach ($v_kelas as $key => $value) : ?>
+                  <?php foreach((array)$value as $keyResult => $valueResult) : ?>
+                    <?php if($keyResult != "total") : ?>
+                      <td class="text-center"><?= isset($valueResult) ? $valueResult : "0" ?></td>
+                    <?php  endif; ?>
+                  <?php endforeach; ?>
                 <?php endforeach; ?>
-                <td><?= $total ?></td>
+                <td><?= $total[$nokelas-1] ?> <?= isset($siswa) ? "siswa" : "poin" ?></td>
               </tr>
             <?php
-              $total = 0;
               $nokelas++;
             endforeach;
             ?>

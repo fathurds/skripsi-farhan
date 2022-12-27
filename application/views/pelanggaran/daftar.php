@@ -66,7 +66,7 @@
                 <td><?= @$no ?></td>
                 <td><?= @$detail_melanggar['nis'] ?></td>
                 <td><?= @$detail_melanggar['nama'] ?></td>
-                <td><?= @$detail_melanggar['tingkat'] ?> - <?= @$detail_melanggar['nama_kelas'] ?></td>
+                <td><?= @$detail_melanggar['nama_kelas'] ?></td>
                 <td class="text-center"><?= @$detail_melanggar['kode_tatib'] ?></td>
                 <td><?= @$detail_melanggar['alasan'] ?></td>
                 <td><?= @$detail_melanggar['created_date'] ?></td>

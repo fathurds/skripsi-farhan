@@ -14,7 +14,7 @@ class KelasModel extends CI_Model {
 		$this->db->select('*');
 		$this->db->from($this->tableName);
 		$this->db->limit($from,$offset);
-		$this->db->order_by('tingkat');
+		$this->db->order_by('nama');
 
 		return $this->db->get();
 	}

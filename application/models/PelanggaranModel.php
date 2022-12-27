@@ -120,39 +120,54 @@ class PelanggaranModel extends CI_Model
 		return $this->db->query($queAll);
 	}
 
+	// public function selectPoinKelas($id, $siswa = "")
+	// {
+	// 	$kriteria = $this->GroupTatibModel->selectKriteriaAll()->result();
+	// 	$countKriteria = "";
+	// 	$total = "";
+
+	// 	$numItems = count($kriteria);
+	// 	$i = 0;
+	// 	$poinKelas = "";
+	// 	foreach ($kriteria as $pelanggaran) { // memasukan C1-C12
+	// 		if ($siswa != "siswa") {
+	// 			$poinKelas = "* " . $pelanggaran->bobot;
+	// 		}
+	// 		$countKriteria .= ", COUNT(DISTINCT IF(id_kelas = " . $id . ",
+	// 						IF(kriteria = '" . $pelanggaran->kriteria . "',
+	// 							id_pelanggaran, NULL),
+	// 						NULL)) " . $poinKelas . " as " . $pelanggaran->kriteria . "";
+
+	// 		$total .= "COUNT(DISTINCT IF(id_kelas = " . $id . ",
+	// 					IF(kriteria = '" . $pelanggaran->kriteria . "',
+	// 						id_pelanggaran, NULL),
+	// 					NULL)) " . $poinKelas;
+
+	// 		if (++$i != $numItems) {
+	// 			$total .= "+";
+	// 		}
+	// 	}
+
+	// 	$query = "SELECT
+	// 				a.tingkat, a.nama
+	// 				" . $countKriteria . ", " . $total . " as total
+	// 			from tb_pelanggaran join tb_kelas a WHERE a.id = " . $id . "";
+
+	// 	return $this->db->query($query);
+	// }
+
 	public function selectPoinKelas($id, $siswa = "")
 	{
-		$kriteria = $this->GroupTatibModel->selectKriteriaAll()->result();
-		$countKriteria = "";
-		$total = "";
-
-		$numItems = count($kriteria);
-		$i = 0;
-		$poinKelas = "";
-		foreach ($kriteria as $pelanggaran) { // memasukan C1-C12
-			if ($siswa != "siswa") {
-				$poinKelas = "* " . $pelanggaran->bobot;
-			}
-			$countKriteria .= ", COUNT(DISTINCT IF(id_kelas = " . $id . ",
-							IF(kriteria = '" . $pelanggaran->kriteria . "',
-								id_pelanggaran, NULL),
-							NULL)) " . $poinKelas . " as " . $pelanggaran->kriteria . "";
-
-			$total .= "COUNT(DISTINCT IF(id_kelas = " . $id . ",
-						IF(kriteria = '" . $pelanggaran->kriteria . "',
-							id_pelanggaran, NULL),
-						NULL)) " . $poinKelas;
-
-			if (++$i != $numItems) {
-				$total .= "+";
-			}
+		$result = array();
+		for($i=1; $i<=12;$i++) {
+			$query = "SELECT sum(t.poin) as C$i from tb_pelanggaran p
+					LEFT JOIN tb_tatib t ON kode_tatib = kode
+					WHERE id_kelas = $id AND kriteria = 'C$i'";
+					
+			$data = $this->db->query($query)->row_array();
+			array_push($result, $data);
 		}
 
-		$query = "SELECT
-					a.tingkat, a.nama
-					" . $countKriteria . ", " . $total . " as total
-				from tb_pelanggaran join tb_kelas a WHERE a.id = " . $id . "";
-
-		return $this->db->query($query);
+		return $result;
 	}
 }

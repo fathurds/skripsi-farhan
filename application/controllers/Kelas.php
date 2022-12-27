@@ -17,16 +17,28 @@ class Kelas extends CI_Controller
 		$data['semuaKelas'] = $this->KelasModel->selectAll()->result();
 		$data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
 
-		$temp = array();
+		$result = array();
+		$totalArray = array();
 
 		foreach ($data['semuaKelas'] as $kelas) { // Looping kelas untuk mendapatkan id kelas
 
-			$tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id)->result_array()[0];
+			$tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id);
+			$total = 0;
+			foreach($tempKelas as $key => $value) {
+				foreach($value as $keyResult => $valueResult) {
+					$total += $valueResult;
+				}
+			}
+			$tempKelas['total'] = $total;
+			// echo "<pre>";
+			// print_r($tempKelas); die;
+			array_push($totalArray, $total);
 
-			array_push($temp, $tempKelas);
+			$result[$kelas->nama] = $tempKelas;
 		}
 
-		$data['kelas'] = $temp;
+		$data['kelas'] = $result;
+		$data['total'] = $totalArray;
 
 		// $total = array_column($data['kelas'], 'total'); // UNTUK RANKING
 		// array_multisort($total, SORT_DESC, $data['kelas']);
