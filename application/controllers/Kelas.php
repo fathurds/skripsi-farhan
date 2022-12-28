@@ -24,8 +24,8 @@ class Kelas extends CI_Controller
 
 			$tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id);
 			$total = 0;
-			foreach($tempKelas as $key => $value) {
-				foreach($value as $keyResult => $valueResult) {
+			foreach ($tempKelas as $key => $value) {
+				foreach ($value as $keyResult => $valueResult) {
 					$total += $valueResult;
 				}
 			}
@@ -81,16 +81,30 @@ class Kelas extends CI_Controller
 		$data['semuaKelas'] = $this->KelasModel->selectAll()->result();
 		$data['kategori_pelanggaran'] = $this->GroupTatibModel->selectKriteriaAll()->result();
 
-		$temp = array();
+		$result = array();
+		$totalArray = array();
 
 		foreach ($data['semuaKelas'] as $kelas) { // Looping kelas untuk mendapatkan id kelas
 
-			$tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id, 'siswa')->result_array()[0];
+			$tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id, true);
+			$total = 0;
+			foreach ($tempKelas as $key => $value) {
+				foreach ($value as $keyResult => $valueResult) {
+					$total += $valueResult;
+				}
+			}
+			$tempKelas['total'] = $total;
+			array_push($totalArray, $total);
 
-			array_push($temp, $tempKelas);
+			$result[$kelas->nama] = $tempKelas;
 		}
+		// echo "<pre>";
+		// print_r($tempKelas);
+		// die;
 
-		$data['kelas'] = $temp;
+		$data['kelas'] = $result;
+		$data['total'] = $totalArray;
+
 		$data['siswa'] = true;
 
 		$this->load->view('layout/aheader', $this->head);

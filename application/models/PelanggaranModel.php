@@ -156,14 +156,15 @@ class PelanggaranModel extends CI_Model
 	// 	return $this->db->query($query);
 	// }
 
-	public function selectPoinKelas($id, $siswa = "")
+	public function selectPoinKelas($id, $siswa = null)
 	{
+		$perhitungan = $siswa ? "count" : "sum";
 		$result = array();
-		for($i=1; $i<=12;$i++) {
-			$query = "SELECT sum(t.poin) as C$i from tb_pelanggaran p
+		for ($i = 1; $i <= 12; $i++) {
+			$query = "SELECT $perhitungan(t.poin) as C$i from tb_pelanggaran p
 					LEFT JOIN tb_tatib t ON kode_tatib = kode
 					WHERE id_kelas = $id AND kriteria = 'C$i'";
-					
+
 			$data = $this->db->query($query)->row_array();
 			array_push($result, $data);
 		}
