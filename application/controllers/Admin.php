@@ -350,4 +350,17 @@ class Admin extends CI_Controller
 		$this->load->view('pelanggaran/daftar', $data);
 		$this->load->view('layout/afooter');
 	}
+
+	public function changePass()
+	{
+		$this->load->view('layout/aheader', $this->head);
+		$this->load->view('ubah');
+		$this->load->view('layout/afooter');
+	}
+
+	public function createUser()
+	{
+		$this->load->model('userModel');
+		$this->userModel->insertAllUser();
+	}
 }

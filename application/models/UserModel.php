@@ -56,6 +56,28 @@ class UserModel extends CI_Model {
 		$this->db->delete($this->tableName);
 	}
 
+	public function getAllUser() {
+		$this->db->select('nis');
+		$this->db->from('tb_siswa');
+		$this->db->where('id > 740');
+		$this->db->limit(1200);
+		return $this->db->get();
+	}
+
+	public function insertAllUser(){
+		$nisArr = $this->getAllUser()->result();
+		
+		for($i=0;$i<count($nisArr);$i++){
+			$data = array(
+				'username' => $nisArr[$i]->nis,
+				'password' => password_hash($nisArr[$i]->nis, PASSWORD_DEFAULT),
+				'kategori' => 'siswa'
+			);
+			
+			$this->db->insert('tb_users', $data);
+		}
+	}
+
 }
 
 ?>

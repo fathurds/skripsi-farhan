@@ -11,13 +11,17 @@
             <div class="container">
               <div class="row">
                 <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    Password salah
+                  </div>
                   <table class="table table-bordered" style="background: #d3fffb;" id="dt">
                     <tbody>
                     <?php echo form_open('home/cPass/');?>
                     <input type="hidden" name="id_kelas" value="<?php echo $this->uri->segment(4); ?>">
                     <tr class="warning">
                       <td style="background: #d3fffb;">Password Sebelumnya</td>
-                      <td style="background: #d3fffb;"><input type="text" name="old" value="" placeholder="Password Sebelumnya" class="form-control" required=""></td>
+                      <td style="background: #d3fffb;"><input type="password" name="old" value="" placeholder="Password Sebelumnya" class="form-control" required=""></td>
                     </tr>
                     <tr class="warning">
                       <td style="background: #d3fffb;">Password Baru</td>
