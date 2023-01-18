@@ -64,19 +64,19 @@ class UserModel extends CI_Model {
 		return $this->db->get();
 	}
 
-	public function insertAllUser(){
-		$nisArr = $this->getAllUser()->result();
+	// public function insertAllUser(){
+	// 	$nisArr = $this->getAllUser()->result();
 		
-		for($i=0;$i<count($nisArr);$i++){
-			$data = array(
-				'username' => $nisArr[$i]->nis,
-				'password' => password_hash($nisArr[$i]->nis, PASSWORD_DEFAULT),
-				'kategori' => 'siswa'
-			);
+	// 	for($i=0;$i<count($nisArr);$i++){
+	// 		$data = array(
+	// 			'username' => $nisArr[$i]->nis,
+	// 			'password' => password_hash($nisArr[$i]->nis, PASSWORD_DEFAULT),
+	// 			'kategori' => 'siswa'
+	// 		);
 			
-			$this->db->insert('tb_users', $data);
-		}
-	}
+	// 		$this->db->insert('tb_users', $data);
+	// 	}
+	// }
 
 }
 

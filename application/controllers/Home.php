@@ -100,20 +100,24 @@ class Home extends CI_Controller
 		// 	}
 		// }
 
-		if($form['old'] == $data['password']) {
+		if(password_verify($form['old'], $data['password'])) {
 			if ($form['new1'] == $form['new2']) {
 				$upd['password'] = password_hash($form['new1'], PASSWORD_DEFAULT);
 				$this->UserModel->update($data['id'], $upd);
-	
-				if ($this->session->kategori == 'siswa')
-					redirect('siswa/');
-				elseif ($this->session->kategori == 'guru')
-					redirect('guru/');
-				elseif ($this->session->kategori == 'admin')
-					redirect('admin/');
+				
+				$msg = [
+					'alert' => 'success',
+					'message' => "Password berhasil diubah"
+				];
+				$this->session->set_flashdata('msg', $msg);
 			}
 		} else {
-			redirect($this->session->kategori.'/changePass');
+			$msg = [
+				'alert' => 'danger',
+				'message' => "Password salah"
+			];
+			$this->session->set_flashdata('msg', $msg);
 		}
+		redirect($this->session->kategori.'/changePass');
 	}
 }

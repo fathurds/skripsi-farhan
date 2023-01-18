@@ -14,7 +14,7 @@
                 }
                 ?>
                 <a href="<?php echo site_url('admin/grouptatibAct/add'); ?>" title="Materi"><button class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Tambah Kriteria Tata Tertib</button></a>
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-sm-2">
                         <h4>Show
                             <select>
@@ -36,7 +36,7 @@
                     </div>
 
 
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

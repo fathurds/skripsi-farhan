@@ -9,7 +9,7 @@
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Tambah Sanksi
           </button>
         </a>
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-sm-2">
             <h4>Show
               <select>
@@ -31,7 +31,7 @@
           </div>
 
 
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -92,7 +92,7 @@
     </div>
   </div>
 </div>
-<div class="section">
+<!-- <div class="section">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -119,4 +119,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

@@ -7,7 +7,7 @@
                   <h2>Data Siswa</h2>
                   <a href="<?php echo site_url('admin/siswaAct/add/'.$this->uri->segment(3));?>" title="Materi"><button class="btn btn-primary" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Tambah Siswa</button></a>
                   <a href="<?php echo site_url('admin/siswaAct/add3/'.$this->uri->segment(3));?>" title="Materi"><button class="btn btn-primary" ><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>&nbsp;Upload Excel</button></a>
-                  <div class="row">
+                  <!-- <div class="row">
                     <div class="col-sm-2">
                       <h4>Show 
                         <select>
@@ -29,13 +29,19 @@
                     </div>
 
 
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
           </div><br>
           <div class="section">
             <div class="container">
+              <?php if($this->session->flashdata('msg')): ?>
+              <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <?= $this->session->flashdata('msg') ?>
+              </div>
+              <?php endif; ?>
               <div class="row">
                 <div class="col-md-12">
                   <table class="table table-bordered" style="color:black; background: #d3fffb;" id="dt">
@@ -86,7 +92,7 @@
               </div>
             </div>
           </div>
-          <div class="section">
+          <!-- <div class="section">
             <div class="container">
               <div class="row">
                 <div class="col-md-12">
@@ -113,4 +119,4 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->

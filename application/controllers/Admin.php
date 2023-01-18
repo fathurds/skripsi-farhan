@@ -34,7 +34,7 @@ class Admin extends CI_Controller
 		} else if ($comm == "add2") {
 			$data = $this->input->post();
 			$users['username'] = $data['nip'];
-			$users['password'] = md5($data['nip']);
+			$users['password'] = password_hash($data['nip'], PASSWORD_DEFAULT);
 			$users['kategori'] = 'guru';
 			$data['id_user'] = $this->UserModel->insert($users);
 			$this->GuruModel->insert($data);
@@ -229,16 +229,24 @@ class Admin extends CI_Controller
 		} else if ($comm == "add2") {
 			$data = $this->input->post();
 			$users['username'] = $data['nis'];
-			$users['password'] = md5($data['nis']);
-			$users['kategori'] = 'siswa';
-			$data['id_user'] = $this->UserModel->insert($users);
-			$this->SiswaModel->insert($data);
-			redirect('admin/siswa/' . $data['id_kelas']);
+			$siswa = $this->SiswaModel->selectByNIS($data['nis']);
+			if($siswa->num_rows() > 0){
+				$this->session->set_flashdata('msg', 'NIS sudah terdaftar');
+				redirect('admin/siswaAct/add/'.$data['id_kelas']);
+			} else {
+				$users['password'] = password_hash($data['nis'], PASSWORD_DEFAULT);
+				$users['kategori'] = 'siswa';
+				$data['id_user'] = $this->UserModel->insert($users);
+				$this->SiswaModel->insert($data);
+				$this->session->set_flashdata('msg', 'Siswa berhasil ditambahkan');
+				redirect('admin/siswa/' . $data['id_kelas']);
+			}
 		} else if ($comm == "del") {
 			$id_user = $this->SiswaModel->selectById($id)->row()->id_user;
 			$id_kelas = $this->SiswaModel->selectById($id)->row()->id_kelas;
 			$this->SiswaModel->delete($id);
 			$this->UserModel->delete($id_user);
+			$this->session->set_flashdata('msg', 'Siswa berhasil dihapus');
 			redirect('admin/siswa/' . $id_kelas);
 		} else if ($comm == "add3") {
 			$data['kelas'] = $this->KelasModel->selectById($id)->row_array();
@@ -270,7 +278,7 @@ class Admin extends CI_Controller
 					if ($i != 1 && $row['A'] != "") {
 						$data['nis'] = $row['A'];
 						$users['username'] = $row['A'];
-						$users['password'] = md5($data['nis']);
+						$users['password'] = password_hash($data['nis'], PASSWORD_DEFAULT);
 						$users['kategori'] = 'siswa';
 						$data['id_user'] = $this->UserModel->insert($users);
 						$data['nama'] = $row['B'];
@@ -344,11 +352,33 @@ class Admin extends CI_Controller
 
 	public function pelanggaran()
 	{
+		$search = null;
+		if($this->input->get('search')){
+			$search = $this->input->get('search');
+		}
 		$data['guru'] = $this->GuruModel->selectAllJoinguru()->result_array();
-		$data['siswa_melanggar'] = $this->PelanggaranModel->selectAllSiswaMelanggar()->result_array();
+		$data['siswa_melanggar'] = $this->PelanggaranModel->selectAllSiswaMelanggar($search)->result_array();
 		$this->load->view('layout/aheader', $this->head);
 		$this->load->view('pelanggaran/daftar', $data);
 		$this->load->view('layout/afooter');
+	}
+
+	public function pelanggaranAct($comm, $id = 0)
+	{
+		if ($comm == "del") {
+			$this->PelanggaranModel->delete($id);
+			redirect('admin/pelanggaran');
+		} else if ($comm == "edit") {
+			$data['edit'] = $this->GuruModel->selectById($id)->result_array()[0];
+			$data['mapel'] = $this->MapelModel->selectAll()->result();
+			$this->load->view('layout/aheader', $this->head);
+			$this->load->view('admin/fGuruEdit', $data);
+			$this->load->view('layout/afooter');
+		} else if ($comm == "edit2") {
+			$data = $this->input->post();
+			$this->GuruModel->update($data['id'], $data);
+			redirect('admin/guru/');
+		}
 	}
 
 	public function changePass()
@@ -358,9 +388,9 @@ class Admin extends CI_Controller
 		$this->load->view('layout/afooter');
 	}
 
-	public function createUser()
-	{
-		$this->load->model('userModel');
-		$this->userModel->insertAllUser();
-	}
+	// public function createUser()
+	// {
+	// 	$this->load->model('userModel');
+	// 	$this->userModel->insertAllUser();
+	// }
 }

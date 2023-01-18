@@ -14,7 +14,7 @@
         }
         ?>
         <a href="<?php echo site_url('admin/tatibAct/add'); ?>" title="Materi"><button class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Tambah Tata Tertib</button></a>
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-sm-2">
             <h4>Show
               <select>
@@ -36,7 +36,7 @@
           </div>
 
 
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -53,7 +53,7 @@
               <th>Kode</th>
               <th>Daftar Tata tertib</th>
               <th>Poin</th>
-              <th>Aksi</th>
+              <th style="min-width: 115px;">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -95,7 +95,7 @@
     </div>
   </div>
 </div>
-<div class="section">
+<!-- <div class="section">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -122,4 +122,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

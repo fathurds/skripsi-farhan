@@ -27,10 +27,15 @@ class PelanggaranModel extends CI_Model
 		return $this->db->query($q);
 	}
 
-	public function selectAllSiswaMelanggar()
+	public function selectAllSiswaMelanggar($search = null)
 	{
+		$where = "";
+		if(isset($search)){
+			$where = "WHERE tb_siswa.nama LIKE '%$search%' OR tb_pelanggaran.nis LIKE '%$search%'";
+		}
 		$queAll = "
 				SELECT
+					tb_pelanggaran.id_pelanggaran,
 					tb_pelanggaran.nis,
 					tb_siswa.nama,
 					tb_pelanggaran.kode_tatib,
@@ -43,6 +48,7 @@ class PelanggaranModel extends CI_Model
 				LEFT JOIN tb_siswa ON tb_pelanggaran.nis = tb_siswa.nis
 				LEFT JOIN tb_tatib ON tb_pelanggaran.kode_tatib = tb_tatib.kode
 				LEFT JOIN tb_kelas ON tb_siswa.id_kelas = tb_kelas.id
+				$where
 				ORDER BY created_date DESC, id_pelanggaran DESC
 			";
 		// $queAll = "
@@ -170,5 +176,10 @@ class PelanggaranModel extends CI_Model
 		}
 
 		return $result;
+	}
+
+	public function delete($id) {
+		$this->db->where('id_pelanggaran', $id);
+		$this->db->delete($this->tableName);
 	}
 }

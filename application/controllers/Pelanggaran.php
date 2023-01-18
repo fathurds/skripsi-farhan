@@ -11,6 +11,7 @@ class Pelanggaran extends CI_Controller
 		$this->load->model('tatibmodel');
 		$this->load->helper('url');
 		$this->load->database();
+		$this->head['kelasheader'] = $this->KelasModel->selectAll()->result_array();
 	}
 	public function addPelanggaran()
 	{

@@ -1,7 +1,7 @@
 <div class="navbar navbar-default navbar-static-top">
   <div class="container">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#"><span>E-Learning</span></a>
+      <a class="navbar-brand" href="#"><span>Sistem Tata Tertib</span></a>
     </div>
     <div class="collapse navbar-collapse" id="navbar-ex-collapse">
       <ul class="nav navbar-nav navbar-right">
@@ -93,7 +93,7 @@
                     <th>No</th>
                     <th>Tanggal</th>
                     <th>Kode</th>
-                    <th>Nama</th>
+                    <th>Pelanggaran</th>
                     <th>Poin</th>
                   </tr>
                 </thead>

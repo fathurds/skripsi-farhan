@@ -11,6 +11,12 @@
           </div><br>
           <div class="section">
             <div class="container">
+              <?php if($this->session->flashdata('msg')): ?>
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <?= $this->session->flashdata('msg') ?>
+              </div>
+              <?php endif; ?>
               <div class="row">
                 <div class="col-md-12">
                   <table class="table table-bordered" style="background: #d3fffb;" id="dt">

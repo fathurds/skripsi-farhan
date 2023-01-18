@@ -11,10 +11,12 @@
             <div class="container">
               <div class="row">
                 <div class="col-md-12">
-                  <div class="alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    Password salah
-                  </div>
+                  <?php if($this->session->flashdata('msg')): ?>
+                    <div class="alert alert-<?= $this->session->flashdata('msg')['alert'] ?> alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <?= $this->session->flashdata('msg')['message'] ?>
+                    </div>
+                  <?php endif; ?>
                   <table class="table table-bordered" style="background: #d3fffb;" id="dt">
                     <tbody>
                     <?php echo form_open('home/cPass/');?>
