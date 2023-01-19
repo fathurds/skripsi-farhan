@@ -26,6 +26,7 @@ class Pelanggaran extends CI_Controller
 	{
 		if ($comm == "del") {
 			$this->PelanggaranModel->delete($id);
+			$this->session->set_flashdata('msg', 'Data berhasil dihapus');
 			redirect('admin/pelanggaran');
 		} else if ($comm == "edit") {
 			$data['edit'] = true;
@@ -51,6 +52,7 @@ class Pelanggaran extends CI_Controller
 				'id_kelas' => $siswa->id_kelas
 			);
 			$this->PelanggaranModel->update($this->input->post('id_pelanggaran'), $data);
+			$this->session->set_flashdata('msg', 'Data berhasil diubah');
 			redirect('admin/pelanggaran/');
 		}
 	}
@@ -104,6 +106,7 @@ class Pelanggaran extends CI_Controller
 		// echo json_encode($res);
 
 		$this->SiswaModel->insertPelanggaran($melanggar);
+		$this->session->set_flashdata('msg', 'Pelanggaran berhasil ditambah');
 		redirect('admin/pelanggaran');
 	}
 }
