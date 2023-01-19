@@ -178,8 +178,21 @@ class PelanggaranModel extends CI_Model
 		return $result;
 	}
 
+	public function selectPelanggaranById($id){
+		$this->db->select('*');
+		$this->db->from('tb_pelanggaran p');
+		$this->db->join('tb_siswa s', 'p.nis = s.nis', 'LEFT');
+		$this->db->where('id_pelanggaran', $id);
+		return $this->db->get();
+	}
+
 	public function delete($id) {
 		$this->db->where('id_pelanggaran', $id);
 		$this->db->delete($this->tableName);
+	}
+
+	public function update($id, $data){
+		$this->db->where('id_pelanggaran', $id);
+		$this->db->update('tb_pelanggaran', $data);
 	}
 }

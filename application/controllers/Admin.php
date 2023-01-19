@@ -363,24 +363,6 @@ class Admin extends CI_Controller
 		$this->load->view('layout/afooter');
 	}
 
-	public function pelanggaranAct($comm, $id = 0)
-	{
-		if ($comm == "del") {
-			$this->PelanggaranModel->delete($id);
-			redirect('admin/pelanggaran');
-		} else if ($comm == "edit") {
-			$data['edit'] = $this->GuruModel->selectById($id)->result_array()[0];
-			$data['mapel'] = $this->MapelModel->selectAll()->result();
-			$this->load->view('layout/aheader', $this->head);
-			$this->load->view('admin/fGuruEdit', $data);
-			$this->load->view('layout/afooter');
-		} else if ($comm == "edit2") {
-			$data = $this->input->post();
-			$this->GuruModel->update($data['id'], $data);
-			redirect('admin/guru/');
-		}
-	}
-
 	public function changePass()
 	{
 		$this->load->view('layout/aheader', $this->head);

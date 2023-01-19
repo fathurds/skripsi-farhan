@@ -76,7 +76,7 @@
                 <td><?= @$detail_melanggar['created_date'] ?></td>
                 <td><?= @$detail_melanggar['poin'] ?></td>
                 <td>
-                  <a href="<?= base_url('admin/pelanggaranAct/edit/') . $detail_melanggar['id_pelanggaran']; ?>" title="Edit"><button class="btn btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></a>
+                  <a href="<?= base_url('pelanggaran/pelanggaranAct/edit/') . $detail_melanggar['id_pelanggaran']; ?>" title="Edit"><button class="btn btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></a>
                   <a onclick="deletes(<?= $detail_melanggar['id_pelanggaran']; ?>)" title="Tugas"><button class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>
                 </td>
               </tr>
@@ -105,7 +105,7 @@
         closeOnConfirm: false
       },
       function() {
-        window.location = url + "admin/pelanggaranAct/del/" + id;
+        window.location = url + "pelanggaran/pelanggaranAct/del/" + id;
       });
   }
 </script>

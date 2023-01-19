@@ -2,12 +2,13 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <h2 id="judul-tambah-pelanggaran">Tambah Pelanggaran</h2>
+        <h2 id="judul-tambah-pelanggaran"><?= isset($edit) ? "Ubah" : "Tambah" ?> Pelanggaran</h2>
       </div>
     </div>
   </div>
 </div><br>
 <div class="section">
+  <?php if(!isset($edit)) : ?>
   <div class="container">
     <div class="row">
       <div class="form-inline">
@@ -28,87 +29,110 @@
     </div>
   </div>
   <hr>
-  <div class="row">
-    <div class="col-md-12 col-table-form">
-      <form action="<?= base_url() ?>pelanggaran/simpanPelanggaran" method="POST">
+  <?php endif; ?>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-table-form">
+        <form action="<?= base_url() ?>pelanggaran/<?= isset($edit) ? "pelanggaranAct/edit2" : "simpanPelanggaran" ?>" method="POST">
+        <?php if(isset($edit)) : ?>
+          <input type="hidden" name="id_pelanggaran" value="<?= $pelanggaranPeserta->id_pelanggaran ?>">
+        <?php endif; ?>  
         <table class="table table-bordered" style="background: #d3fffb;" id="dt">
-          <tbody>
-            <tr class="warning">
-              <td style="background: #d3fffb;">NIS</td>
-              <td style="background: #d3fffb;"><input id="nis" type="text" name="nis" value="" placeholder="NIS" class="form-control" required="" readonly="true"></td>
-            </tr>
-            <tr class="warning">
-              <td style="background: #d3fffb;">Nama</td>
-              <td style="background: #d3fffb;"><input id="nama" type="text" name="nama" value="" placeholder="Nama Siswa" class="form-control" required="" readonly="true"></td>
-            </tr>
-            <tr class="warning">
-              <td style="background: #d3fffb;">Email</td>
-              <td style="background: #d3fffb;"><input id="email" type="email" name="email" value="" placeholder="Email" class="form-control" required="" readonly="true"></td>
-            </tr>
-            <tr class="warning">
-              <td style="background: #d3fffb;">Kontak</td>
-              <td style="background: #d3fffb;"><input id="kontak" type="text" name="kontak" value="" placeholder="Kontak" class="form-control" required="" readonly="true"></td>
-            </tr>
-            <tr>
-              <td style="background: #d3fffb;">Riwayat Pelanggaran</td>
-              <td>
-                <input id="riwayatPelanggaran" type="hidden" name="riwayatPelanggaran" value="Tidak ada pelanggaran" class="form-control" readonly>
-                <table class="table table-hover" id="tableRiwayat">
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th style="min-width: 100px;">Tanggal</th>
-                      <th>Kode</th>
-                      <th>Nama</th>
-                      <th>Poin</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tbl_riwayat_pelanggaran">
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-            <tr class="warning">
-              <td style="background: #d3fffb;">Sanksi</td>
-              <td style="background: #d3fffb;">
-                <textarea type="text" name="rekomendasi" class="form-control" id="rekomendasi" placeholder="Tidak ada sanksi" readonly>
-                            </textarea>
-              </td>
-            </tr>
-            <tr class="warning">
-              <td style="background: #d3fffb;">Tindak Lanjut</td>
-              <td style="background: #d3fffb;">
-                <textarea type="text" name="tindaklanjut" class="form-control" id="tindaklanjut" placeholder="Tidak ada tindak lanjut" readonly>
-                            </textarea>
-              </td>
-            </tr>
-            <tr class="warning">
-              <td style="background: #d3fffb;">Pelanggaran yang dilakukan</td>
-              <td style="background: #d3fffb;">
-                <select id="pilih-pelanggaran" class="form-control" name="pelanggaran" required>
-                  <option value="" disabled selected>Pilih</option>
-                  <?php
-                  foreach ($listTatib as $val_tatib) {
-                    echo "<option value='" . $val_tatib->kode . "'>" . $val_tatib->kode . "-" . $val_tatib->nama . "</option>";
-                  }
-                  ?>
-                </select>
-                <div id="errorContentPilihPelanggaran" class="help-block">
-              </td>
-            </tr>
-            <tr class="warning">
-              <td style="background: #d3fffb;">Alasan</td>
-              <td style="background: #d3fffb;">
-                <textarea id="alasan" name="alasan" class="form-control"></textarea>
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td><input id="btn-tambah-pelanggaran" type="submit" value="Tambah Pelanggaran" class="btn btn-primary"></td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
+            <tbody>
+              <tr class="warning">
+                <td style="background: #d3fffb;">NIS</td>
+                <td style="background: #d3fffb;">
+                  <input id="nis" type="text" name="nis" value="<?= @$pelanggaranPeserta->nis ?>" placeholder="NIS" class="form-control" required="" readonly="true">
+                </td>
+              </tr>
+              <tr class="warning">
+                <td style="background: #d3fffb;">Nama</td>
+                <td style="background: #d3fffb;"><input id="nama" type="text" name="nama" value="<?= @$pelanggaranPeserta->nama ?>" placeholder="Nama Siswa" class="form-control" required="" readonly="true"></td>
+              </tr>
+              <tr class="warning">
+                <td style="background: #d3fffb;">Email</td>
+                <td style="background: #d3fffb;"><input id="email" type="email" name="email" value="<?= @$pelanggaranPeserta->email ?>" placeholder="Email" class="form-control" required="" readonly="true"></td>
+              </tr>
+              <tr class="warning">
+                <td style="background: #d3fffb;">Kontak</td>
+                <td style="background: #d3fffb;"><input id="kontak" type="text" name="kontak" value="<?= @$pelanggaranPeserta->kontak ?>" placeholder="Kontak" class="form-control" required="" readonly="true"></td>
+              </tr>
+              <tr>
+                <td style="background: #d3fffb;">Riwayat Pelanggaran</td>
+                <td>
+                  <input id="riwayatPelanggaran" type="hidden" name="riwayatPelanggaran" value="Tidak ada pelanggaran" class="form-control" readonly>
+                  <table class="table table-hover" id="tableRiwayat">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th style="min-width: 100px;">Tanggal</th>
+                        <th>Kode</th>
+                        <th>Pelanggaran</th>
+                        <th>Poin</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbl_riwayat_pelanggaran">
+                      <?php
+                      if(isset($edit)) :
+                        $no_r = 1;
+                        foreach($riwayat as $riwayat_value) : ?>
+                          <tr>
+                            <td><?= $no_r ?></td>
+                            <td><?= $riwayat_value->created_date ?></td>
+                            <td><?= $riwayat_value->kode_tatib ?></td>
+                            <td><?= $riwayat_value->nama_pelanggaran ?></td>
+                            <td><?= $riwayat_value->poin ?></td>
+                          </tr>
+                          <?php
+                          $no_r++;
+                        endforeach; ?>
+                          <tr>
+                            <td align="center" colspan="4">Total</td>
+                            <td><?= $poin ?></td>
+                          </tr>
+                      <?php endif; ?>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr class="warning">
+                <td style="background: #d3fffb;">Sanksi</td>
+                <td style="background: #d3fffb;">
+                  <textarea type="text" name="rekomendasi" class="form-control" id="rekomendasi" placeholder="Tidak ada sanksi" readonly><?= $rekomendasi->sanksi ?></textarea>
+                </td>
+              </tr>
+              <tr class="warning">
+                <td style="background: #d3fffb;">Tindak Lanjut</td>
+                <td style="background: #d3fffb;">
+                  <textarea type="text" name="tindaklanjut" class="form-control" id="tindaklanjut" placeholder="Tidak ada tindak lanjut" readonly><?= $rekomendasi->tindak_lanjut ?></textarea>
+                </td>
+              </tr>
+              <tr class="warning">
+                <td style="background: #d3fffb;">Pelanggaran yang dilakukan</td>
+                <td style="background: #d3fffb;">
+                  <select id="pilih-pelanggaran" class="form-control" name="pelanggaran" required>
+                    <option value="" disabled selected>Pilih</option>
+                    <?php foreach ($listTatib as $val_tatib) : ?>
+                      <option value='<?= $val_tatib->kode ?>' <?= isset($edit) && $pelanggaranPeserta->kode_tatib == $val_tatib->kode ? "selected" : "" ?> ><?= $val_tatib->kode ?> - <?= $val_tatib->nama ?></option>;
+                    <?php endforeach; ?>
+                  </select>
+                  <div id="errorContentPilihPelanggaran" class="help-block">
+                </td>
+              </tr>
+              <tr class="warning">
+                <td style="background: #d3fffb;">Alasan</td>
+                <td style="background: #d3fffb;">
+                  <textarea id="alasan" name="alasan" class="form-control"><?= @$pelanggaranPeserta->alasan ?></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><input id="btn-tambah-pelanggaran" type="submit" value="<?= isset($edit) ? "Simpan" : "Tambah" ?> Pelanggaran" class="btn btn-primary"></td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
     </div>
   </div>
 </div>
@@ -117,7 +141,9 @@
 <script>
   $(function() {
     var poin;
-    $('.col-table-form').hide();
+    <?php if(!isset($edit)) : ?>
+      $('.col-table-form').hide();
+    <?php endif; ?>
 
     $('#cari_nis').submit(function(e) {
       e.preventDefault();
