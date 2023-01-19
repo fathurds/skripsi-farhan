@@ -274,22 +274,38 @@ class Admin extends CI_Controller
 				$id_kelas = $this->input->post('id_kelas');
 				$dataE = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
 				$i = 1;
+				$nisDuplicate = array();
+				$nisSuccess = array();
 				foreach ($dataE as $row) {
 					if ($i != 1 && $row['A'] != "") {
 						$data['nis'] = $row['A'];
 						$users['username'] = $row['A'];
 						$users['password'] = password_hash($data['nis'], PASSWORD_DEFAULT);
 						$users['kategori'] = 'siswa';
-						$data['id_user'] = $this->UserModel->insert($users);
-						$data['nama'] = $row['B'];
-						$data['email'] = $row['C'];
-						$data['kontak'] = $row['D'];
-						$data['id_kelas'] = $id_kelas;
-						// var_dump($users);
-						$this->SiswaModel->insert($data);
+						$query = $this->db->get_where('tb_users', array(
+							'username' => $users['username']
+						));
+						$count = $query->num_rows();
+
+						if($count > 0) {
+							array_push($nisDuplicate, $row['A']);
+						} else {
+							$data['id_user'] = $this->UserModel->insert($users);
+							$data['nama'] = $row['B'];
+							$data['email'] = $row['C'];
+							$data['kontak'] = $row['D'];
+							$data['id_kelas'] = $id_kelas;
+							// var_dump($users);
+							$this->SiswaModel->insert($data);
+							array_push($nisSuccess, $row['A']);
+						}
 					}
 					$i++;
 				}
+				$this->session->set_flashdata('detail', array(
+					'success' => $nisSuccess,
+					'failed' => $nisDuplicate
+				));
 			}
 			redirect('Admin/siswa/' . $id_kelas);
 		} else if ($comm == "edit") {

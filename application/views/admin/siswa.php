@@ -42,6 +42,14 @@
                 <?= $this->session->flashdata('msg') ?>
               </div>
               <?php endif; ?>
+              <?php if($this->session->flashdata('detail')): ?>
+              <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <b>Berhasil</b>: <?= count($this->session->flashdata('detail')['success']) ?>, <b>Duplikat</b>: <?= count($this->session->flashdata('detail')['failed']) ?>
+                <br>
+                <b>Data Duplikat</b>: <?= join(", ", $this->session->flashdata('detail')['failed']); ?>
+              </div>
+              <?php endif; ?>
               <div class="row">
                 <div class="col-md-12">
                   <table class="table table-bordered" style="color:black; background: #d3fffb;" id="dt">
