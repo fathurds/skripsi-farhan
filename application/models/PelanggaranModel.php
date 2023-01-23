@@ -164,12 +164,14 @@ class PelanggaranModel extends CI_Model
 
 	public function selectPoinKelas($id, $siswa = null)
 	{
+		$kriteria = $this->GroupTatibModel->selectAll()->result();
+
 		$perhitungan = $siswa ? "count" : "sum";
 		$result = array();
-		for ($i = 1; $i <= 12; $i++) {
-			$query = "SELECT $perhitungan(t.poin) as C$i from tb_pelanggaran p
+		foreach ($kriteria as $val) {
+			$query = "SELECT $perhitungan(t.poin) as $val->kriteria from tb_pelanggaran p
 					LEFT JOIN tb_tatib t ON kode_tatib = kode
-					WHERE id_kelas = $id AND kriteria = 'C$i'";
+					WHERE id_kelas = $id AND kriteria = '$val->kriteria'";
 
 			$data = $this->db->query($query)->row_array();
 			array_push($result, $data);

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Metode extends CI_Controller
+class Metodehaha extends CI_Controller
 {
   private $head;
   function __construct()
@@ -11,6 +11,15 @@ class Metode extends CI_Controller
     $this->load->helper('url');
     $this->load->database();
     $this->head['kelasheader'] = $this->KelasModel->selectAll()->result_array();
+  }
+
+  public function ratingPoin()
+  {
+    $data = $this->sawMethod();
+
+    $this->load->view('layout/aheader', $this->head);
+    $this->load->view('metode/rating_poin', $data);
+    $this->load->view('layout/afooter');
   }
 
   private function getRekap($data_rekap)
@@ -116,15 +125,6 @@ class Metode extends CI_Controller
     return $result_rekap;
   }
 
-  public function ratingPoin()
-  {
-    $data = $this->sawMethod();
-
-    $this->load->view('layout/aheader', $this->head);
-    $this->load->view('metode/rating_poin', $data);
-    $this->load->view('layout/afooter');
-  }
-
   public function saw()
   {
     $data = $this->sawMethod();
@@ -147,36 +147,42 @@ class Metode extends CI_Controller
     $kategori_pelanggaran = $this->GroupTatibModel->selectKriteriaAll()->result();
     $data['kategori_pelanggaran'] = $kategori_pelanggaran;
 
-    $result = array(); // Untuk menyimpan hasil yang nantinya akan tampil di tabel
-    $totalArray = array();
+    $result = array(); // [1] UNTUK MENYIMPAN poin_kelas
+    $totalArray = array(); // [2] MENYIMPAN TOTAL DARI TIAP KRITERIA (C1-C12)
 
-    $fuzzy = $this->PelanggaranModel->selectAllFuzzy()->result();
+    $fuzzy = $this->PelanggaranModel->selectAllFuzzy()->result(); // [3] ARRAY UNTUK MENDAPATKAN NILAI fuzzy 'SELECT * FROM tb_fuzzy'
 
-    $poinSementara = array(); // Untuk menyimpan nilai tertinggi tiap kriteria
-    foreach ($data['semuaKelas'] as $kelas) { // Looping kelas untuk mendapatkan id kelas
+    $poinSementara = array(); // TEMPAT MENYIMPAN TOTAL SEMENTARA DARI TIAP C1-C12 YANG NANTINYA DIMASUKAN KE $totalArray
+    foreach ($data['semuaKelas'] as $kelas) { // [4] LOOPING YANG PERTAMA (untuk dpt semua kelas seperti X-DPIB1 dan seterusnya)
 
-      $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id);
+      $tempKelas = $this->PelanggaranModel->selectPoinKelas($kelas->id); // [5] Model untuk menghitung nilai kriteria tiap kelas
       $total = 0;
-      foreach ($tempKelas as $key => $value) {
-        foreach ($value as $keyResult => $valueResult) {
-          foreach ($fuzzy as $val_fuzzy) {
-            if ($valueResult < 3) {
-              $tempKelas[$key][$keyResult] = 0;
+      foreach ($tempKelas as $key => $value) { // [8] LOOPING KEDUA UNTUK MENDAPATKAN KRITERIA DAN NILAI KRITERIA HASILNYA= C3 => 12
+        foreach ($value as $keyResult => $valueResult) { // [9] BUKAN LOOPING. INI UNTUK MEMANGGIL ARRAY ASSOSIATIVE
+                                                          // $keyResult mendapatkan nama kriteria C1
+                                                          // $valueResult mendapatkan nilai bobot kriteria
+          foreach ($fuzzy as $val_fuzzy) { // [10] LOOPING KETIGA UNTUK MENDAPATKAN NILAI BOBOT FUZZY
+            if ($valueResult < 3) { //[11] Di pseudocode ada kesalahan menulis poin_kelas[i][j] == 0 seharusnya poin_kelas[i][j] < 3
+              $tempKelas[$key][$keyResult] = 0; // Di pseudocode ini sama dengan data_hitung_poin[i][j] = 0
+                                                // membuat nilai awal dan agar yang nilai pelanggaran dibawah 3 mendapatkan
+                                                // poin fuzzy sebesar 0
 
               if (empty($poinSementara['max_' . $keyResult])) {
                 $poinSementara['max_' . $keyResult] = 0;
               }
 
               break;
-            } else if ($valueResult >= $val_fuzzy->nilai_min && $valueResult <= $val_fuzzy->nilai_maks) {
-              $tempKelas[$key][$keyResult] = $val_fuzzy->bobot;
+            } else if ($valueResult >= $val_fuzzy->nilai_min && $valueResult <= $val_fuzzy->nilai_maks) { //[12] Kondisi jika poin pelanggaran
+                                                                                                          // diantara batas min dan max
+                                                                                                          // nilai fuzzy
+              $tempKelas[$key][$keyResult] = $val_fuzzy->bobot; // [13] Memasukan bobot fuzzy ke C1-C12 tiap kelas
 
               if (empty($poinSementara['max_' . $keyResult]) || $poinSementara['max_' . $keyResult] < $val_fuzzy->bobot) {
                 $poinSementara['max_' . $keyResult] = $val_fuzzy->bobot;
               }
 
               break;
-            } else if ($valueResult > 102) {
+            } else if ($valueResult > 102) { // [14] Membuat nilai default jika poin pelanggaran diatas 102. Nilai bobot fuzzy menjadi 11
 
               $tempKelas[$key][$keyResult] = 11;
               $poinSementara['max_' . $keyResult] = 11;
@@ -186,39 +192,41 @@ class Metode extends CI_Controller
               continue;
             }
           }
-          $total += $tempKelas[$key][$keyResult];
+          $total += $tempKelas[$key][$keyResult]; // [15] MENAMBAHKAN TOTAL POIN TIAP KELAS UNTUK DIMASUKAN KE $tempKelas['total']
         }
       }
       $tempKelas['total'] = $total;
 
       array_push($totalArray, $total);
 
-      $result[$kelas->nama] = $tempKelas; // nilai yang akan dinormalisasi
+      $result[$kelas->nama] = $tempKelas; // [16] MENYIMPAN DATA YANG AKAN DINORMALISASI
     }
 
-    // NORMALISASI
     $totalSementara = 0;
-    foreach ($result as $keyKelas => $val) {
+    foreach ($result as $keyKelas => $val) { // [17] LOOPING DARI RATING POIN YANG SUDAH DIHITUNG (data_rating_poin)
       $index = 0;
-      foreach ($val as $key => $value) {
+      foreach ($val as $key => $value) { // [18] LOOPING UNTUK MENDAPATKAN NILAI C1-C12 DARI TIAP KELAS
         if (is_array($value)) {
-          foreach ($value as $keyHasil => $valueHasil) {
+          foreach ($value as $keyHasil => $valueHasil) { // BUKAN LOOPING. INI UNTUK MEMANGGIL ASSOSIATIVE ARRAY
             if ($poinSementara['max_' . $keyHasil] != 0) {
-              $result[$keyKelas][$key][$keyHasil] = round($valueHasil / $poinSementara['max_' . $keyHasil], 2);
+              $result[$keyKelas][$key][$keyHasil] = round($valueHasil / $poinSementara['max_' . $keyHasil], 2); // [19] PROSES NORMALISASI
+                                                                                                                // NILAI KRITERIA DIBAGI
+                                                                                                                // NILAI KRITERIA TERTINGGI
             } else {
               $result[$keyKelas][$key][$keyHasil] = 0;
             }
             $totalSementara += $valueHasil / ($poinSementara['max_' . $keyHasil] ?: 1) * $kategori_pelanggaran[$index]->bobot;
+            // [20] MENAMBAHKAN NILAI DARI TIAP KRITERIA YANG SUDAH DINORMALISASI KE TOTAL POIN KELAS
           }
         }
         $index++;
       }
-      $result[$keyKelas]['total'] = round($totalSementara, 2);
-      $totalSementara = 0;
+      $result[$keyKelas]['total'] = round($totalSementara, 2); // [21] MEMASUKAN POIN TOTAL YANG SUDAH DINORMALISASI
+                                                                // TOTAL YANG AKAN TAMPIL DI TABEL
+      $totalSementara = 0; // SET TOTAL MENJADI NOL LAGI
     }
-    // echo "<pre>";
-    // print_r($poinSementara); die;
-    $data['kelas'] = $result;
+
+    $data['kelas'] = $result; // [22] KUMPULAN DATA YANG AKAN MUNCUL DI TABEL MULAI DARI KELAS, KRITERIA DAN TOTAL
 
     return $data;
   }
